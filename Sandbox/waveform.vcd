@@ -1,0 +1,83 @@
+$date
+	Sun Mar 29 04:01:09 2026
+$end
+$version
+	Icarus Verilog
+$end
+$timescale
+	100ps
+$end
+$scope module Adder_tb $end
+$var wire 32 ! out [31:0] $end
+$var reg 1 " clk $end
+$var reg 32 # in [31:0] $end
+$var reg 1 $ rst $end
+$var integer 32 % FAILED [31:0] $end
+$var integer 32 & PASSED [31:0] $end
+$scope module adderU $end
+$var wire 1 " clk $end
+$var wire 32 ' in [31:0] $end
+$var wire 1 $ rst $end
+$var wire 32 ( out [31:0] $end
+$var reg 32 ) acc [31:0] $end
+$upscope $end
+$upscope $end
+$enddefinitions $end
+$comment Show the parameter values. $end
+$dumpall
+$end
+#0
+$dumpvars
+bx )
+bx (
+bx '
+b0 &
+b0 %
+1$
+bx #
+0"
+bx !
+$end
+#50
+b0 )
+1"
+#100
+0"
+#150
+1"
+#160
+b1 !
+b1 (
+b1 #
+b1 '
+0$
+#170
+b1 &
+#200
+0"
+#250
+b10 !
+b10 (
+b1 )
+1"
+#260
+b11 !
+b11 (
+b10 #
+b10 '
+#270
+b10 &
+#300
+0"
+#350
+b101 !
+b101 (
+b11 )
+1"
+#360
+b1000 !
+b1000 (
+b101 #
+b101 '
+#370
+b11 &
