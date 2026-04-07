@@ -23,6 +23,7 @@ module ALU(
 			`ALU_SUBU: alu_result = operand1 - operand2;
 			`ALU_XOR: alu_result = operand1 ^ operand2;
 			`ALU_SLT: alu_result = $signed(operand1) < $signed(operand2);
+			`ALU_SLTU: alu_result = operand1 < operand2;
 			`ALU_EQ : alu_result = operand1 == operand2;
 			`ALU_NEQ: alu_result = operand1 != operand2;
 			`ALU_LUI: alu_result = {operand2[15:0], 16'b0};
