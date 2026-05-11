@@ -42,8 +42,8 @@
 `define		OP_SW				6'd43
 
 // FSM states
-`define		IF				3'd0
-`define		ID				3'd1
-`define		EX				3'd2
-`define		MEM				3'd3
-`define		WB				3'd4
+`define		IF	    			3'd0
+`define		ID		    		3'd1
+`define		EX			    	3'd2
+`define		MEM				    3'd3
+`define		WB				    3'd4

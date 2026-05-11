@@ -41,7 +41,6 @@ module CPU(
 
     wire [31:0] mem_addr, mem_read_data;
 
-    // registered to avoid delta-cycle glitch on S_MEM_WRITE→S_IF transition
     reg halt_reg;
     always @(posedge clk) begin
         if (rst) halt_reg <= 1'b0;
@@ -52,63 +51,63 @@ module CPU(
     assign mem_addr = IorD ? ALUOut : PC;
 
     assign operand1 = ALUSrcA ? A : PC;
-    assign operand2 = (ALUSrcB == 2'b00) ? B                     :
-                      (ALUSrcB == 2'b01) ? 32'd4                  :
-                      (ALUSrcB == 2'b10) ? ext_imm                :
-                                           {ext_imm[29:0], 2'b00};
+    assign operand2 = (ALUSrcB == 2'b00) ? B :
+                        (ALUSrcB == 2'b01) ? 32'd4 :
+                        (ALUSrcB == 2'b10) ? ext_imm :
+                        {ext_imm[29:0], 2'b00};
 
     wire [31:0] jump_addr = {PC[31:28], immj, 2'b00};
     wire [31:0] pc_next   = (PCSource == 2'b00) ? alu_result :
-                            (PCSource == 2'b01) ? ALUOut     :
-                            (PCSource == 2'b10) ? jump_addr  :
-                                                  A;
+                            (PCSource == 2'b01) ? ALUOut :
+                            (PCSource == 2'b10) ? jump_addr :
+                            A;
 
     wire pc_en = PCWrite | (PCWriteCond & alu_result[0]);
 
-    assign wr_addr = (RegDst == 2'b01) ? rd    :
-                     (RegDst == 2'b11) ? 5'd31 :
-                                         rt;
+    assign wr_addr = (RegDst == 2'b01) ? rd :
+                        (RegDst == 2'b11) ? 5'd31 :
+                        rt;
     assign wr_data = (MemtoReg == 2'b01) ? MDR :
-                     (MemtoReg == 2'b10) ? PC  :
-                                           ALUOut;
+                        (MemtoReg == 2'b10) ? PC :
+                        ALUOut;
 
     always @(posedge clk) begin
         if (rst) begin
-            PC     <= 32'b0;
-            IR     <= 32'b0;
-            MDR    <= 32'b0;
-            A      <= 32'b0;
-            B      <= 32'b0;
+            PC <= 32'b0;
+            IR <= 32'b0;
+            MDR <= 32'b0;
+            A <= 32'b0;
+            B <= 32'b0;
             ALUOut <= 32'b0;
         end else begin
-            if (pc_en)   PC <= pc_next;
+            if (pc_en) PC <= pc_next;
             if (IRWrite) IR <= mem_read_data;
-            MDR    <= mem_read_data;
-            A      <= rd_data1;
-            B      <= rd_data2;
+            MDR <= mem_read_data;
+            A <= rd_data1;
+            B <= rd_data2;
             ALUOut <= alu_result;
         end
     end
 
     CTRL ctrl (
-        .clk(clk),          .rst(rst),
-        .opcode(opcode),    .funct(funct),
-        .PCWrite(PCWrite),  .PCWriteCond(PCWriteCond),
-        .IorD(IorD),        .MemRead(MemRead),   .MemWrite(MemWrite),
-        .IRWrite(IRWrite),  .MemtoReg(MemtoReg), .PCSource(PCSource),
-        .ALUOp(ALUOp),      .ALUSrcA(ALUSrcA),   .ALUSrcB(ALUSrcB),
-        .RegWrite(RegWrite),.RegDst(RegDst)
+        .clk(clk), .rst(rst),
+        .opcode(opcode), .funct(funct),
+        .PCWrite(PCWrite), .PCWriteCond(PCWriteCond),
+        .IorD(IorD), .MemRead(MemRead), .MemWrite(MemWrite),
+        .IRWrite(IRWrite), .MemtoReg(MemtoReg), .PCSource(PCSource),
+        .ALUOp(ALUOp), .ALUSrcA(ALUSrcA), .ALUSrcB(ALUSrcB),
+        .RegWrite(RegWrite), .RegDst(RegDst)
     );
 
     RF rf (
-        .clk(clk),      .rst(rst),
-        .rd_addr1(rs),  .rd_addr2(rt),
+        .clk(clk), .rst(rst),
+        .rd_addr1(rs), .rd_addr2(rt),
         .rd_data1(rd_data1), .rd_data2(rd_data2),
         .RegWrite(RegWrite), .wr_addr(wr_addr), .wr_data(wr_data)
     );
 
     MEM mem (
-        .clk(clk),          .rst(rst),
+        .clk(clk), .rst(rst),
         .mem_addr(mem_addr),
         .MemWrite(MemWrite),
         .mem_write_data(B),
@@ -117,7 +116,7 @@ module CPU(
 
     ALU alu (
         .operand1(operand1), .operand2(operand2),
-        .shamt(shamt),       .funct(ALUOp),
+        .shamt(shamt), .funct(ALUOp),
         .alu_result(alu_result)
     );
 
