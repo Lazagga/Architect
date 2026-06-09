@@ -1,0 +1,39 @@
+`timescale 1ns / 100ps
+
+module RF (
+	// You may also change the input and output ports (maybe changing reg to wire)
+		input clk,
+		input rst,
+		// Read-related ports
+		input [4:0] rd_addr1,
+		input [4:0] rd_addr2,
+		output reg [31:0] rd_data1,
+		output reg [31:0] rd_data2,
+		// Write-related ports
+		input RegWrite,
+		input [4:0] wr_addr,
+		input [31:0] wr_data
+	);
+
+    reg [31:0] register_file [0:31];
+
+	always @(*) begin
+		rd_data1 = (rd_addr1 == 5'b0)                          ? 32'b0   :
+		           (RegWrite && wr_addr == rd_addr1)            ? wr_data :
+		                                                          register_file[rd_addr1];
+	end
+	always @(*) begin
+		rd_data2 = (rd_addr2 == 5'b0)                          ? 32'b0   :
+		           (RegWrite && wr_addr == rd_addr2)            ? wr_data :
+		                                                          register_file[rd_addr2];
+	end
+
+	always @(posedge clk) begin
+		if (rst) begin
+			$readmemh("initial_reg.mem", register_file);
+		end else if (RegWrite && wr_addr != 5'b0) begin
+			register_file[wr_addr] <= wr_data;
+		end
+	end
+
+endmodule
